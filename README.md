@@ -2,6 +2,7 @@
 
 A Spotify command line client, inspired by [this reddit post](https://www.reddit.com/r/unixporn/comments/cfd64p/oc_new_cli_discord_client_discpp_that_is_purely/)
 
+[Original Link for this project](https://github.com/SeungheonOh/DisCpp)
 # Features
 
 - go to particular artist
@@ -20,4 +21,5 @@ A Spotify command line client, inspired by [this reddit post](https://www.reddit
 [Get access token via Spotify API](https://stackoverflow.com/questions/39887342/how-can-i-get-an-access-token-spotify-api)
 [Bearer Token Example Python](https://stackoverflow.com/questions/29931671/making-an-api-call-in-python-with-an-api-that-requires-a-bearer-token)
 [Postman Playlist Generator](https://documenter.getpostman.com/view/583/spotify-playlist-generator/2MtDWP?version=latest)
-
+[Spotify Console](https://developer.spotify.com/console/artists/)
+[Fake REST API for testing](https://jsonplaceholder.typicode.com/)
