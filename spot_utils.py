@@ -47,10 +47,3 @@ class Artist():
 client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-a = Artist("I Prevail")
-#print("ALBUMS BY: {}".format(a.name))
-#print("-"*50)
-#for album in a.get_albums():
-#	print(album)
-#print("-"*50)
-#print("{} has {} album(s)".format(a.name, a.get_number_of_albums()))
