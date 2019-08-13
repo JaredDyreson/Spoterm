@@ -47,3 +47,9 @@ class Artist():
 client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+
+def Random_Playlist():
+	def __init__(self):
+		self.avaialable_genres = sp.recommendation_genre_seeds()
+	def print_seeds(self):
+		print(self.avaialable_genres)
