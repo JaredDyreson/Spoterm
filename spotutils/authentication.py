@@ -11,11 +11,13 @@ import time
 import os
 import spotipy
 from pprint import pprint as pp
+from starbucksautoma import json_parser as jp
 
+parser = jp.jsonparser("/home/jared/Applications/funnel_cake/credentials/config.json")
+oauth_token_location = "/home/jared/Applications/funnel_cake/credentials/token"
 
-
-SPOTIFY_APP_ID = 'e1f239ec0ee443689d6786fd3f397af1'
-SPOTIFY_APP_SECRET = 'cbecd4d200f8482d910cb1db77d6f10c'
+SPOTIFY_APP_ID = parser.getjsonkey(key="APP_ID")
+SPOTIFY_APP_SECRET = parser.getjsonkey(key="APP_SECRET")
 
 def run_server():
 	app = Flask(__name__)
@@ -67,7 +69,7 @@ def run_server():
 
 		session['oauth_token'] = (resp['access_token'], '')
 		me = spotify.get('/me')
-		with open("token.txt", "w+") as f:
+		with open(oauth_token_location, "w+") as f:
 			f.write(str(session.get('oauth_token')[0]))
 		return 'Logged in as id={0} name={1} redirect={2}'.format(
 				me.data,
@@ -78,6 +80,7 @@ def run_server():
 	def get_spotify_oauth_token():
 		return session.get('oauth_token')
 
+	# run the webdriver then start the webserver. Once the webserver is running, we then open the url to the redirect url
 	driver = webdriver.Firefox()
 	port = 5000
 	url = "http://127.0.0.1:{}".format(port)
@@ -88,12 +91,5 @@ def run_server():
 	driver.quit()
 	os.remove("geckodriver.log")
 def return_credentials():
-	with open("token.txt") as f:
+	with open(oauth_token_location) as f:
 		return f.read()
-# run the webdriver then start the webserver. Once the webserver is running, we then open the url to the redirect url
-# https://stackoverflow.com/questions/11125196/python-flask-open-a-webpage-in-default-browser
-
-if __name__ == '__main__':
-
-	sp = spotipy.Spotify(auth=token)
-	print(len(get_playlist_tracks(sp, "12164553253", "7sls5iyVDsDMTlnXVCakOE")))

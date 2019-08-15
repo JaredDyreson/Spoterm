@@ -9,15 +9,17 @@ import requests
 import json
 from pprint import pprint as pp
 
+token_location = "/home/jared/Applications/funnel_cake/credentials/token"
 class Playlist():
-	def __init__(self, url: str, list_of_tracks=[]):
-		self.url = url
+	def __init__(self, url: str, name="", list_of_tracks=[]):
+		self.url = url.replace("\\", "")
 		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 		self.manager = PlaylistManager()
 		if(len(list_of_tracks) == 0):
 			self.track_ids = self.get_track_ids()
 		else:
 			self.track_ids = list_of_tracks
+
 	@classmethod
 	def from_track_ids(cls, list_of_track_ids: list):
 		return cls(url="", list_of_tracks=list_of_track_ids)
@@ -62,7 +64,7 @@ class PlaylistManager():
 	def __init__(self, user_id="12164553253"):
 		self.user_id = user_id
 		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-		if(not os.path.isfile("token.txt")):
+		if(not os.path.isfile(token_location)):
 			authentication.run_server()
 		else:
 			try:
@@ -105,13 +107,15 @@ class PlaylistManager():
 			'Content-Type': 'application/json', 
 			'Authorization': 'Bearer {}'.format(authentication.return_credentials())
 		}
-		payload = {
-			"position": 0, 
-			"uris": ["spotify:track:{}".format(element) for element in track_list] 
-		}
-		req = requests.post(url, headers=headers, data=json.dumps(payload))
-		if req.status_code != 201:
-			print('Error: Request returned status code {}. Returned: {}'.format(req.status_code, req.text))
+		chunks = [track_list[x:x+100] for x in range(0, len(track_list), 100)]
+		for chunk in chunks:
+			payload = {
+				"position": 0, 
+				"uris": ["spotify:track:{}".format(element) for element in chunk] 
+			}
+			req = requests.post(url, headers=headers, data=json.dumps(payload))
+			if req.status_code != 201:
+				print('Error: Request returned status code {}. Returned: {}'.format(req.status_code, req.text))
 
 	def truncate_playlist(self, playlist: Playlist):
 		# remove the contents of a playlist
