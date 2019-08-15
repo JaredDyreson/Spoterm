@@ -42,7 +42,7 @@ def combine(dict_one: dict, dict_two: dict, path=None):
 	return
 base = {}
 
-p = spotify_playlist.Playlist(url="https://open.spotify.com/user/12164553253/playlist/4YyT7ryyOem7MpTXKzqWOi?si=jCMRMOE8S66Pc8UlsVm7xA")
+p = spotify_playlist.Playlist(url="https://open.spotify.com/user/12164553253/playlist/1WLzRlCnEw8CWGJaS3x6nj?si=RRpisW4mRECAQw_q0S7zAg")
 tracks = p.get_playlist_tracks()
 
 l = []
@@ -52,5 +52,5 @@ for index, track in enumerate(tracks):
 	l.append(convert_for_sorting(track_id, track_artist, track_name, track_album_name, track_album_id))
 for element in l:
 	combine(base, element)
-print(base)
+pp(base)
 #for element in l: print(element)
