@@ -24,8 +24,8 @@ class Playlist():
 	def from_track_ids(cls, list_of_track_ids: list):
 		return cls(url="", list_of_tracks=list_of_track_ids)
 	@classmethod
-	def from_playlists(cls, name: str, source_one, source_two):
-		manager = PlaylistManager()
+	def from_playlists(cls, name: str, source_one, source_two, token=""):
+		manager = PlaylistManager(token=token)
 		new_playlist = Playlist.from_track_ids(source_one+source_two)
 		if(not manager.is_playlist(name)):
 			manager.create_new_playlist(name)
@@ -62,23 +62,12 @@ class Playlist():
 	def combine(self, other):
 		return list(set().union(self.get_track_ids(), other.get_track_ids()))	
 class PlaylistManager():
-	def __init__(self, user_id="12164553253"):
+	def __init__(self, user_id="12164553253", token=""):
 		self.user_id = user_id
 		# credentials that can be used by a regular user and accessing public information
 		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-		# making sure that we have proper privilages through a couple of situations
-		if(not os.path.isfile(token_location)):
-			# no token path, obtain a token an store it in the correct location
-			authentication.run_server()
-		else:
-			try:
-				# check if the current credentials are working
-				self.elevated_credentials = spotipy.Spotify(auth=authentication.return_credentials())
-				self.get_playlists()
-			except spotipy.client.SpotifyException: 
-				# if they are invalid, request a new token
-				authentication.run_server()
-				self.elevated_credentials = spotipy.Spotify(auth=authentication.return_credentials())
+		self.elevated_credentials = spotipy.Spotify(auth=token)
+		self.token = token
 	def create_new_playlist(self, name: str):
 		# create new playlist by giving it a name and the user id
 		return self.elevated_credentials.user_playlist_create(self.user_id, name)
@@ -124,7 +113,7 @@ class PlaylistManager():
 		headers = {
 			'Accept': 'application/json', 
 			'Content-Type': 'application/json', 
-			'Authorization': 'Bearer {}'.format(authentication.return_credentials())
+			'Authorization': 'Bearer {}'.format(self.token)
 		}
 		chunks = [track_list[x:x+100] for x in range(0, len(track_list), 100)]
 		for chunk in chunks:
