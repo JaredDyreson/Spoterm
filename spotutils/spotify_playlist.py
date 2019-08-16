@@ -63,17 +63,23 @@ class Playlist():
 class PlaylistManager():
 	def __init__(self, user_id="12164553253"):
 		self.user_id = user_id
+		# credentials that can be used by a regular user and accessing public information
 		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+		# making sure that we have proper privilages through a couple of situations
 		if(not os.path.isfile(token_location)):
+			# no token path, obtain a token an store it in the correct location
 			authentication.run_server()
 		else:
 			try:
+				# check if the current credentials are working
 				self.elevated_credentials = spotipy.Spotify(auth=authentication.return_credentials())
 				self.get_playlists()
 			except spotipy.client.SpotifyException: 
+				# if they are invalid, request a new token
 				authentication.run_server()
 				self.elevated_credentials = spotipy.Spotify(auth=authentication.return_credentials())
 	def create_new_playlist(self, name: str):
+		# create new playlist by giving it a name and the user id
 		return self.elevated_credentials.user_playlist_create(self.user_id, name)
 	def is_playlist(self, playlist_name: str):
 		# checks if playlist exists based on name
@@ -83,15 +89,20 @@ class PlaylistManager():
 				return True
 		return False
 	def get_playlist_id(self, name: str):
+		# find the playlist id based on the playlist name
+		# return: playlist id 
 		for index, element in enumerate(self.get_playlists()):
 			if(element['name'] == name):
 				return element['id']
 		return None
 	def get_playlist_url(self, name: str):
+		# find the playlist url baed on the playlist name
+		# return : Spotify playlist url
 		identification_hash = self.get_playlist_id(name)
 		for index, element in enumerate(self.get_playlists()):
 			if(element['name'] and element['id'] == identification_hash):
 				return element['external_urls']['spotify']
+		return None
 	def get_playlists(self):
 		# return a list of json objects representing playlists
 		results = self.elevated_credentials.user_playlists(self.user_id)
@@ -100,7 +111,14 @@ class PlaylistManager():
 			results = self.elevated_credentials.next(results)
 			playlist_manifest.extend(results['items'])
 		return playlist_manifest
+	def search(self, artist: str, track: str):
+		result = self.credentials.search(q="artist: {} track: {}".format(artist, track),type='track')
+		if(len(result) == 0): return None
+		try: return result['tracks']['items'][0]['id']
+		except IndexError: return None
 	def append_to_playlist(self, playlist: Playlist, track_list: list):
+		# add songs to a given Playlist object
+		# this does not use the Spotipy API but requests
 		url = "https://api.spotify.com/v1/users/{}/playlists/{}/tracks?position=0".format(self.user_id, playlist.playlist_id())
 		headers = {
 			'Accept': 'application/json', 

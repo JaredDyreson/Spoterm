@@ -12,3 +12,4 @@ A command line utility to combine multiple Spotify playlists into one, larger on
 - [Handling Multiple Scopes](https://stackoverflow.com/questions/53218225/using-multiple-scopes-with-spotipy)
 - [Get more than Spotipy limit via pagination](https://stackoverflow.com/questions/39086287/spotipy-how-to-read-more-than-100-tracks-from-a-playlist)
 - [Adding tracks outside of Spotipy API](https://www.oipapio.com/question-5492713)
+- [Getting more precise search results from Spotipy](https://stackoverflow.com/questions/39840319/spotipy-get-track-ids-from-track-names)

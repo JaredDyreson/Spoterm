@@ -6,19 +6,12 @@ def parse_for_sorting(track_output: dict):
 	track_id = track_output['track']['id']
 	track_name = track_output['track']['name']
 	track_artist = track_output['track']['artists'][0]['name']
-	track_album_name = track_output['track']['album']['name']
-	track_album_id = track_output['track']['album']['id']
-	return track_id, track_name, track_artist, track_album_name, track_album_id
+	return track_id, track_name, track_artist
 
-def convert_for_sorting(track_id: str, track_artist: str, track_name: str, track_album_name: str, track_album_id: str):
+def convert_for_sorting(track_id: str, track_artist: str, track_name: str):
 	new_example = {
 		track_artist: {
-			"album":{
-				track_album_name: track_album_id
-			},
-			"song":{
-				track_name: track_id
-			}
+			track_name: track_id
 		}
 	}
 	return new_example
@@ -42,15 +35,26 @@ def combine(dict_one: dict, dict_two: dict, path=None):
 	return
 base = {}
 
+# NOTE
+# this only works when the playlist is already present
+# needs to be modified to reverse search Spotify API by [artist name] - [track name] along with the album to prevent edge cases
+
 p = spotify_playlist.Playlist(url="https://open.spotify.com/user/12164553253/playlist/1WLzRlCnEw8CWGJaS3x6nj?si=RRpisW4mRECAQw_q0S7zAg")
+manager = spotify_playlist.PlaylistManager()
 tracks = p.get_playlist_tracks()
 
 l = []
 
 for index, track in enumerate(tracks):
-	track_id, track_name, track_artist, track_album_name, track_album_id = parse_for_sorting(track)
-	l.append(convert_for_sorting(track_id, track_artist, track_name, track_album_name, track_album_id))
+	track_id, track_name, track_artist = parse_for_sorting(track)
+	l.append(convert_for_sorting(track_id, track_artist, track_name))
 for element in l:
 	combine(base, element)
-pp(base)
-#for element in l: print(element)
+
+id_list = []
+for artist in sorted(list(base.keys())):
+	for track in sorted(list(base[artist].keys())):
+		id_list.append(base[artist][track])
+		#print("\tTrack: {}\tid: {}".format(track, base[artist][track]))
+manager.truncate_playlist(p)
+manager.append_to_playlist(p, id_list)
