@@ -9,16 +9,13 @@ import requests
 import json
 from pprint import pprint as pp
 
-token_location = "/home/jared/Applications/funnel_cake/credentials/token"
 class Playlist():
 	def __init__(self, url: str, name="", list_of_tracks=[]):
 		self.url = url.replace("\\", "")
 		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 		self.manager = PlaylistManager()
-		if(len(list_of_tracks) == 0):
-			self.track_ids = self.get_track_ids()
-		else:
-			self.track_ids = list_of_tracks
+		if(len(list_of_tracks) == 0): self.track_ids = self.get_track_ids()
+		else: self.track_ids = list_of_tracks
 
 	@classmethod
 	def from_track_ids(cls, list_of_track_ids: list):
@@ -39,8 +36,8 @@ class Playlist():
 	def base(self):
 		return self.url.split("/")[len(self.url.split("/"))-1]	
 	def user_id(self):
-		#return self.url.split("/")[4]
-		return "12164553253"
+		return self.url.split("/")[4]
+
 	def playlist_id(self):
 		try:
 			return self.base().split("?si=")[0]
