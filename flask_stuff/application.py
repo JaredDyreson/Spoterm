@@ -3,19 +3,28 @@ from flask_oauthlib.client import OAuth, OAuthException
 from forms import RegistrationForm, LoginForm, PlaylistMergeForm
 from flask_wtf import FlaskForm
 
+from spotipy.oauth2 import SpotifyClientCredentials
+
+import spotipy
+
 import spotify_playlist
 import re
+import json
+import requests
 
-url_re = "https:\/\/open\.spotify\.com\/user\/[a-za-z0-9].*\/[a-za-z0-9].*\?si\=[a-za-z0-9].*"
+url_re = "^(https:\/\/open.spotify.com\/user\/spotify\/playlist\/|spotify:user:spotify:playlist:)([a-zA-Z0-9]+)(.*)$"
 expression = re.compile(url_re)
 
 application = Flask(__name__)
 application.config['SECRET_KEY'] = '84c1c81be6f347629bf01b97fbbe883c'
 
+# TODO
+# make these environment variables in web server and read them
+
 SPOTIFY_APP_ID = "e1f239ec0ee443689d6786fd3f397af1"
 SPOTIFY_APP_SECRET = "cbecd4d200f8482d910cb1db77d6f10c"
 
-scope = ['playlist-modify-public', 'user-library-read', 'user-library-modify']
+scope = ['playlist-modify-public', 'user-library-read', 'user-library-modify', 'user-read-email', 'user-read-private']
 our_token = []
 oauth_application = OAuth(application)
 
@@ -36,11 +45,13 @@ def is_empty(string: str):
 def index():
 	try:
 		token = session.get('oauth_token')[0]
+		user_id = session.get('user_id')
 	except TypeError:
 		token = "" 
+		user_id = ""
 	form = PlaylistMergeForm(request.form)
 	if(form.validate_on_submit()):
-		manager = spotify_playlist.PlaylistManager(token=token)
+		manager = spotify_playlist.PlaylistManager(user_id, token)
 		url_one = form.playlist_one.data
 		url_two = form.playlist_two.data
 		output_name = form.playlist_output_name.data
@@ -58,7 +69,7 @@ def index():
 			flash("playlist named {} already exists".format(output_name), 'danger')
 			form = PlaylistMergeForm(formdata=None)
 			return render_template('home.html', form=form)
-		else: destination = spotify_playlist.Playlist.from_playlists(output_name, playlist_one, playlist_two, token)
+		else: destination = spotify_playlist.Playlist.from_playlists(output_name, playlist_one, playlist_two, token, user_id)
 
 		manager.truncate_playlist(destination)
 		manager.append_to_playlist(destination, destination.track_ids)
@@ -103,9 +114,21 @@ def spotify_authorized():
 		return 'Access denied: {0}'.format(resp.message)
 
 	session['oauth_token'] = (resp['access_token'], '')
-	me = spotify.get('/me')
-	our_token.append(session.get('oauth_token')[0])
-	flash("Successfully authenticated user!", 'success')
+
+	url = "https://api.spotify.com/v1/me"
+	headers = {
+		'Accept': 'application/json', 
+		'Content-Type': 'application/json', 
+		'Authorization': 'Bearer {}'.format(session.get('oauth_token')[0])
+	}
+
+	req = requests.get(url, headers=headers)
+	text_response = json.loads(req.text)
+
+	session['user_id'] = text_response.get('id')
+	session['username'] = text_response.get('display_name')
+
+	flash("Successfully authenticated user: {}!".format(session.get('username')), 'success')
 	return redirect(url_for('index'))
 
 @spotify.tokengetter

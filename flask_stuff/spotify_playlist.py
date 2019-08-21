@@ -14,7 +14,6 @@ class Playlist():
 		self.url = url.replace("\\", "")
 		credential_manager = SpotifyClientCredentials(client_id=SPOTIFY_APP_ID, client_secret=SPOTIFY_APP_SECRET)
 		self.credentials = spotipy.Spotify(client_credentials_manager=credential_manager)
-		self.manager = PlaylistManager()
 		if(len(list_of_tracks) == 0): self.track_ids = self.get_track_ids()
 		else: self.track_ids = list_of_tracks
 
@@ -22,8 +21,8 @@ class Playlist():
 	def from_track_ids(cls, list_of_track_ids: list):
 		return cls(url="", list_of_tracks=list_of_track_ids)
 	@classmethod
-	def from_playlists(cls, name: str, source_one, source_two, token=""):
-		manager = PlaylistManager(token=token)
+	def from_playlists(cls, name: str, source_one, source_two, token, usr_id):
+		manager = PlaylistManager(usr_id, token)
 		new_playlist = Playlist.from_track_ids(source_one+source_two)
 		if(not manager.is_playlist(name)):
 			manager.create_new_playlist(name)
@@ -60,7 +59,7 @@ class Playlist():
 	def combine(self, other):
 		return list(set().union(self.get_track_ids(), other.get_track_ids()))	
 class PlaylistManager():
-	def __init__(self, user_id="12164553253", token=""):
+	def __init__(self, user_id, token):
 		self.user_id = user_id
 		# credentials that can be used by a regular user and accessing public information
 		credential_manager = SpotifyClientCredentials(client_id=SPOTIFY_APP_ID, client_secret=SPOTIFY_APP_SECRET)
