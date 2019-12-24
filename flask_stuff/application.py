@@ -25,7 +25,7 @@ SPOTIFY_APP_ID = "e1f239ec0ee443689d6786fd3f397af1"
 SPOTIFY_APP_SECRET = "cbecd4d200f8482d910cb1db77d6f10c"
 
 scope = ['playlist-modify-public', 'user-library-read', 'user-library-modify', 'user-read-email', 'user-read-private']
-our_token = []
+
 oauth_application = OAuth(application)
 
 spotify = oauth_application.remote_app(
@@ -39,8 +39,6 @@ spotify = oauth_application.remote_app(
 	authorize_url='https://accounts.spotify.com/authorize'
 )
 
-def is_empty(string: str):
-	return True if((len(string)) == 0) else False
 @application.route("/", methods=['GET', 'POST'])
 def index():
 	try:
@@ -99,6 +97,7 @@ def authenticate():
 		next=request.args.get('next') or request.referrer or None,
 		_external=True
 	)
+	return callback
 	return spotify.authorize(callback=callback)
 	# here we authenticate the user
 
