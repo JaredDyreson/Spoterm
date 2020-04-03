@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3.8
 from pprint import pprint as pp
 import spotify_playlist
 

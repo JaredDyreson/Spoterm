@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3.8
 
 import spotipy
 import spotipy.util as util
@@ -10,6 +10,7 @@ import json
 from pprint import pprint as pp
 
 token_location = "/home/jared/Applications/funnel_cake/credentials/token"
+
 class Playlist():
 	def __init__(self, url: str, name="", list_of_tracks=[]):
 		self.url = url.replace("\\", "")
