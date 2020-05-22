@@ -33,6 +33,7 @@ setup(
     url = "https://github.com/JaredDyreson/Spoterm",
     license = "GNU GPL-3.0",
     packages = [TARGET],
+    dependency_links=['https://github.com/JaredDyreson/SpotifyPlaylist'],
     include_package_data = True
     classifiers = [
         'Programming Language :: Python :: 3.8'

@@ -7,6 +7,8 @@ main_playlists= {
 	"2000's Rock": "https://open.spotify.com/user/believe556/playlist/4ccEeq0sbXWTHRecsFeDHg?si=fDW3FxeYTra_a6h8_lyj9Q"
 }
 
+quit()
+
 #source_one = spotify_playlist.Playlist(url="{}".format(main_playlists["bree and amber and jared's robot"]))
 source_one = spotify_playlist.Playlist(url="https://open.spotify.com/user/12164553253/playlist/2iEsJnrjv3zfjo2HXX92eS?si=tLtNEnMBQuqH8umqGbg73g")
 
