@@ -1,32 +1,28 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3.5
 
 import spotipy
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
-import authentication
-import os
 import requests
 import json
-from pprint import pprint as pp
 
-token_location = "/home/jared/Applications/funnel_cake/credentials/token"
+SPOTIFY_APP_ID = "e1f239ec0ee443689d6786fd3f397af1"
+SPOTIFY_APP_SECRET = "cbecd4d200f8482d910cb1db77d6f10c"
 
 class Playlist():
 	def __init__(self, url: str, name="", list_of_tracks=[]):
 		self.url = url.replace("\\", "")
-		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-		self.manager = PlaylistManager()
-		if(len(list_of_tracks) == 0):
-			self.track_ids = self.get_track_ids()
-		else:
-			self.track_ids = list_of_tracks
+		credential_manager = SpotifyClientCredentials(client_id=SPOTIFY_APP_ID, client_secret=SPOTIFY_APP_SECRET)
+		self.credentials = spotipy.Spotify(client_credentials_manager=credential_manager)
+		if(len(list_of_tracks) == 0): self.track_ids = self.get_track_ids()
+		else: self.track_ids = list_of_tracks
 
 	@classmethod
 	def from_track_ids(cls, list_of_track_ids: list):
 		return cls(url="", list_of_tracks=list_of_track_ids)
 	@classmethod
-	def from_playlists(cls, name: str, source_one, source_two):
-		manager = PlaylistManager()
+	def from_playlists(cls, name: str, source_one, source_two, token, usr_id):
+		manager = PlaylistManager(usr_id, token)
 		new_playlist = Playlist.from_track_ids(source_one+source_two)
 		if(not manager.is_playlist(name)):
 			manager.create_new_playlist(name)
@@ -41,6 +37,7 @@ class Playlist():
 		return self.url.split("/")[len(self.url.split("/"))-1]	
 	def user_id(self):
 		return self.url.split("/")[4]
+
 	def playlist_id(self):
 		try:
 			return self.base().split("?si=")[0]
@@ -62,23 +59,13 @@ class Playlist():
 	def combine(self, other):
 		return list(set().union(self.get_track_ids(), other.get_track_ids()))	
 class PlaylistManager():
-	def __init__(self, user_id="12164553253"):
+	def __init__(self, user_id, token):
 		self.user_id = user_id
 		# credentials that can be used by a regular user and accessing public information
-		self.credentials = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-		# making sure that we have proper privilages through a couple of situations
-		if(not os.path.isfile(token_location)):
-			# no token path, obtain a token an store it in the correct location
-			authentication.run_server()
-		else:
-			try:
-				# check if the current credentials are working
-				self.elevated_credentials = spotipy.Spotify(auth=authentication.return_credentials())
-				self.get_playlists()
-			except spotipy.client.SpotifyException: 
-				# if they are invalid, request a new token
-				authentication.run_server()
-				self.elevated_credentials = spotipy.Spotify(auth=authentication.return_credentials())
+		credential_manager = SpotifyClientCredentials(client_id=SPOTIFY_APP_ID, client_secret=SPOTIFY_APP_SECRET)
+		self.credentials = spotipy.Spotify(client_credentials_manager=credential_manager)
+		self.elevated_credentials = spotipy.Spotify(auth=token)
+		self.token = token
 	def create_new_playlist(self, name: str):
 		# create new playlist by giving it a name and the user id
 		return self.elevated_credentials.user_playlist_create(self.user_id, name)
@@ -124,7 +111,7 @@ class PlaylistManager():
 		headers = {
 			'Accept': 'application/json', 
 			'Content-Type': 'application/json', 
-			'Authorization': 'Bearer {}'.format(authentication.return_credentials())
+			'Authorization': 'Bearer {}'.format(self.token)
 		}
 		chunks = [track_list[x:x+100] for x in range(0, len(track_list), 100)]
 		for chunk in chunks:
