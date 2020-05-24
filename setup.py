@@ -33,7 +33,10 @@ setup(
     url = "https://github.com/JaredDyreson/Spotutils",
     license = "GNU GPL-3.0",
     packages = [TARGET],
-    dependency_links=['https://github.com/JaredDyreson/SpotifyPlaylist'],
+    dependency_links=[
+    'https://github.com/JaredDyreson/SpotifyPlaylist',
+    'https://github.com/JaredDyreson/SpotifyAuthenticator.git'
+     ],
     include_package_data = True
     classifiers = [
         'Programming Language :: Python :: 3.8'
