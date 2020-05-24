@@ -1,0 +1,36 @@
+#!/usr/bin/env python3.8
+
+from SpotifyPlaylist import SpotifyPlaylist, PlaylistManager
+from SpotifyAuthenticator import application, CredentialIngestor
+import sys
+import traceback
+import pdb
+from datetime import datetime
+
+def funnel(src_one: SpotifyPlaylist, src_two: SpotifyPlaylist, 
+            manager: PlaylistManager, dst: str):
+  combined_tracks = src_one + src_two 
+  destination_url = manager.create(dst)
+  merged_playlist = SpotifyPlaylist.from_url(manager, destination_url)
+  merged_playlist.append(combined_tracks)
+  print("[+] Successfully merged {} and {}".format(src_one.name, src_two.name))
+
+manager = CredentialIngestor.generate_manager("credentials.json")
+
+playlist_url_one = input("Playlist URL One >>> ")
+playlist_url_two = input("Playlist URL Two >>> ")
+playlist_output = input("Playlist Output Name >>> ")
+
+try:
+  playlist_one = SpotifyPlaylist.from_url(manager, playlist_url_one)
+  playlist_two = SpotifyPlaylist.from_url(manager, playlist_url_two)
+  funnel(playlist_one, playlist_two, manager, playlist_output)
+except Exception as error:
+  print("[-] Exception has been thrown, aborting....")
+  print("[-] Error: {}".format(error))
+  _, _, tb = sys.exc_info()
+  filename, lineno, funname, line = traceback.extract_tb(tb)[-1]
+  print("{}:{}, in {}\n\t{}".format(
+      filename, lineno, funname, line
+  ))
+  pdb.set_trace()
