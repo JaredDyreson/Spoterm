@@ -37,7 +37,7 @@ setup(
     'https://github.com/JaredDyreson/SpotifyPlaylist',
     'https://github.com/JaredDyreson/SpotifyAuthenticator.git'
      ],
-    include_package_data = True
+    include_package_data = True,
     classifiers = [
         'Programming Language :: Python :: 3.8'
     ]
