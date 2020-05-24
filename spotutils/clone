@@ -14,9 +14,7 @@ def clone(src: SpotifyPlaylist, manager: PlaylistManager):
   cloned_playlist.append(src.tracks)
   print("[+] Successfully cloned {}".format(name))
 
-path = "credentials.json"
-
-manager = CredentialIngestor.generate_manager(path)
+manager = CredentialIngestor.generate_manager(application.CREDENTIAL_SAVED_PTH)
 
 playlist_url = input("Playlist URL >>> ")
 try:

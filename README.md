@@ -46,27 +46,21 @@ A Spotify command line client, inspired by [this reddit post](https://www.reddit
 	- song count
 	- album count
 
-
-
-
-
-
-
-
 # External Links
 
-[Spotipy Documentation](https://spotipy.readthedocs.io/en/latest/#more-examples)
-
-[Interactive Shell Python Documentation](https://code-maven.com/interactive-shell-with-cmd-in-python)
-
-[Convert dict to json](https://stackoverflow.com/questions/26745519/converting-dictionary-to-json)
-
-[Get access token via Spotify API](https://stackoverflow.com/questions/39887342/how-can-i-get-an-access-token-spotify-api)
-
-[Bearer Token Example Python](https://stackoverflow.com/questions/29931671/making-an-api-call-in-python-with-an-api-that-requires-a-bearer-token)
-
-[Postman Playlist Generator](https://documenter.getpostman.com/view/583/spotify-playlist-generator/2MtDWP?version=latest)
-
-[Spotify Console](https://developer.spotify.com/console/artists/)
-
-[Fake REST API for testing](https://jsonplaceholder.typicode.com/)
+- [Spotipy Documentation](https://spotipy.readthedocs.io/en/latest/#non-authorized-requests)
+- [Python Spotify OAuth Flow](https://stackoverflow.com/questions/26726165/python-spotify-oauth-flow)
+- [Running Flask Instance in a Thread](https://stackoverflow.com/questions/49469978/properly-terminate-flask-web-app-running-in-a-thread)
+- [Spotify Developer Portal](https://developer.spotify.com/)
+- [Spotify Developer Documentation](https://developer.spotify.com/documentation/web-api/)
+- [Handling Multiple Scopes](https://stackoverflow.com/questions/53218225/using-multiple-scopes-with-spotipy)
+- [Get more than Spotipy limit via pagination](https://stackoverflow.com/questions/39086287/spotipy-how-to-read-more-than-100-tracks-from-a-playlist)
+- [Adding tracks outside of Spotipy API](https://www.oipapio.com/question-5492713)
+- [Getting more precise search results from Spotipy](https://stackoverflow.com/questions/39840319/spotipy-get-track-ids-from-track-names)
+- [Interactive Shell Python Documentation](https://code-maven.com/interactive-shell-with-cmd-in-python)
+- [Convert dict to json](https://stackoverflow.com/questions/26745519/converting-dictionary-to-json)
+- [Get access token via Spotify API](https://stackoverflow.com/questions/39887342/how-can-i-get-an-access-token-spotify-api)
+- [Bearer Token Example Python](https://stackoverflow.com/questions/29931671/making-an-api-call-in-python-with-an-api-that-requires-a-bearer-token)
+- [Postman Playlist Generator](https://documenter.getpostman.com/view/583/spotify-playlist-generator/2MtDWP?version=latest)
+- [Spotify Console](https://developer.spotify.com/console/artists/)
+- [Fake REST API for testing](https://jsonplaceholder.typicode.com/)
