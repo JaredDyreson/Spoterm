@@ -1,0 +1,33 @@
+#!/usr/bin/env python3.8
+
+from SpotifyPlaylist import SpotifyPlaylist, PlaylistManager
+from SpotifyAuthenticator import application, CredentialIngestor
+import sys
+import traceback
+import pdb
+from datetime import datetime
+
+def clone(src: SpotifyPlaylist, manager: PlaylistManager):
+  name = src.name
+  destination_url = manager.create("{} - CLONED".format(name))
+  cloned_playlist = SpotifyPlaylist.from_url(manager, destination_url)
+  cloned_playlist.append(src.tracks)
+  print("[+] Successfully cloned {}".format(name))
+
+path = "credentials.json"
+
+manager = CredentialIngestor.generate_manager(path)
+
+playlist_url = input("Playlist URL >>> ")
+try:
+  src_playlist = SpotifyPlaylist.from_url(manager, playlist_url)
+  clone(src_playlist, manager)
+except Exception as error:
+  print("[-] Exception has been thrown, aborting....")
+  print("[-] Error: {}".format(error))
+  _, _, tb = sys.exc_info()
+  filename, lineno, funname, line = traceback.extract_tb(tb)[-1]
+  print("{}:{}, in {}\n\t{}".format(
+      filename, lineno, funname, line
+  ))
+  pdb.set_trace()

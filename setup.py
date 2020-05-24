@@ -30,7 +30,7 @@ setup(
     long_description = long_description,
     author = "Jared Dyreson",
     author_email = "jareddyreson@csu.fullerton.edu",
-    url = "https://github.com/JaredDyreson/Spoterm",
+    url = "https://github.com/JaredDyreson/Spotutils",
     license = "GNU GPL-3.0",
     packages = [TARGET],
     dependency_links=['https://github.com/JaredDyreson/SpotifyPlaylist'],

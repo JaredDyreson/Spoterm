@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.8
 
-import spotify_playlist
+from SpotifyPlaylist import *
+from SpotifyAuthenticator import application, CredentialIngestor
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -14,11 +15,19 @@ import time
 def wait_for_element(driver, element_css_selector: str, delay=20):
 	WebDriverWait(driver, delay).until(ec.presence_of_element_located((By.CSS_SELECTOR, element_css_selector)))
 
+application.run()
+credential_manager = CredentialIngestor.CredentialIngestor("credentials.json")
+
+manager = PlaylistManager(
+    credential_manager.user_id,
+    credential_manager.credential_hash
+)
+
 url = "https://music.apple.com/us/playlist/rock-hits-2007/pl.3af683127d6b4f21bd5a2f397b044f3b"
 headless_ = Options()
 headless_.headless = False
 driver = webdriver.Firefox(options=headless_)
-manager = spotify_playlist.PlaylistManager()
+
 
 driver.get(url)
 
@@ -42,7 +51,7 @@ print(track_id_list)
 print(len(track_id_list))
 quit()
 print("[+] New playlist named {} will be created...".format(playlist_name))
-new_playlist = spotify_playlist.Playlist(url="", name=playlist_name, list_of_tracks=track_id_list)
+new_playlist = Playlist(url="", name=playlist_name, list_of_tracks=track_id_list)
 if(not manager.is_playlist(playlist_name)):
 	print("[+] Playlist does not exist, creating..")
 	manager.create_new_playlist(playlist_name)
