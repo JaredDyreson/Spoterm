@@ -1,9 +1,12 @@
 # spotutils
 
-Several different Spotify tools, some web applications and others as command line utilities
+A collection of utilities that communicate and interact with Spotify.
 
+## Clone
 
-## Funnel Cake
+Clone a given playlist so you can have a copy for yourself
+
+## Funnel Cake (CLI)
 
 Merge multiple playlists into a larger one
 
